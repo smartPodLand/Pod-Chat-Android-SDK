@@ -3,6 +3,7 @@ package com.example.chat.application.chatexample;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import com.fanap.podchat.ProgressHandler;
 import com.fanap.podchat.chat.ChatHandler;
@@ -17,6 +18,7 @@ import com.fanap.podchat.model.ResultThreads;
 import com.fanap.podchat.requestobject.RequestAddAdmin;
 import com.fanap.podchat.requestobject.RequestAddParticipants;
 import com.fanap.podchat.requestobject.RequestClearHistory;
+import com.fanap.podchat.requestobject.RequestConnect;
 import com.fanap.podchat.requestobject.RequestCreateThread;
 import com.fanap.podchat.requestobject.RequestDeleteMessage;
 import com.fanap.podchat.requestobject.RequestDeliveredMessageList;
@@ -32,7 +34,7 @@ import com.fanap.podchat.requestobject.RequestRemoveParticipants;
 import com.fanap.podchat.requestobject.RequestReplyFileMessage;
 import com.fanap.podchat.requestobject.RequestReplyMessage;
 import com.fanap.podchat.requestobject.RequestSeenMessageList;
-import com.fanap.podchat.requestobject.RequestSignalMsg;
+import com.fanap.podchat.requestobject.RequestSpam;
 import com.fanap.podchat.requestobject.RequestThread;
 import com.fanap.podchat.requestobject.RequestThreadInfo;
 import com.fanap.podchat.requestobject.RequestUnBlock;
@@ -43,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface ChatContract {
+
     interface view {
 
 //        default void onRecivedNotification(Notification notification) {
@@ -62,6 +65,7 @@ public interface ChatContract {
         }
 
         default void onGetContacts() {
+            Log.d("MTAG","MESSAGE SENT in CH-L");
         }
 
         default void onGetThreadParticipant() {
@@ -162,6 +166,9 @@ public interface ChatContract {
 
         void sendLocationMessage(RequestLocationMessage request);
 
+        void sendLocationMessage(RequestLocationMessage requestLocationMessage, ProgressHandler.sendFileMessage sendFileMessage);
+
+
         void isDatabaseOpen();
 
         void retryUpload(RetryUpload retry, ProgressHandler.sendFileMessage handler);
@@ -196,6 +203,8 @@ public interface ChatContract {
 
         void connect(String serverAddress, String appId, String severName, String token, String ssoHost
                 , String platformHost, String fileServer, String typeCode);
+
+        void connect(RequestConnect requestConnect);
 
         void mapSearch(String searchTerm, Double latitude, Double longitude);
 
@@ -252,6 +261,8 @@ public interface ChatContract {
 
         void spam(long threadId);
 
+        String spam(RequestSpam requestSpam);
+
         void getBlockList(Long count, Long offset, ChatHandler handler);
 
         String sendFileMessage(Context context, Activity activity, String description, long threadId, Uri fileUri, String metaData, Integer messageType, ProgressHandler.sendFileMessage handler);
@@ -290,7 +301,7 @@ public interface ChatContract {
 
         void updateThreadInfo(RequestThreadInfo request, ChatHandler handler);
 
-        void deleteMessage(ArrayList<Long> messageIds, Boolean deleteForAll, ChatHandler handler);
+        void deleteMessage(ArrayList<Long> messageIds,long threadId, Boolean deleteForAll, ChatHandler handler);
 
         void deleteMessage(RequestDeleteMessage deleteMessage, ChatHandler handler);
 
@@ -300,12 +311,22 @@ public interface ChatContract {
 
         void setAdmin(RequestAddAdmin requestAddAdmin);
 
+        void removeAdminRules(RequestAddAdmin requestAddAdmin);
+
         void clearHistory(RequestClearHistory requestClearHistory);
 
         void getAdminList(RequestGetAdmin requestGetAdmin);
 
-        String startSignalMessage(RequestSignalMsg requestSignalMsg);
+//        String startSignalMessage(RequestSignalMsg requestSignalMsg);
 
-        void stopSignalMessage(String uniqueId);
+//        void stopSignalMessage(String uniqueId);
+
+        void getNotSeenDuration(ArrayList<Integer> userIds);
+
+        String startTyping(long threadId);
+
+        boolean stopTyping(String signalUniqueId);
+
+        void stopAllSignalMessages();
     }
 }
